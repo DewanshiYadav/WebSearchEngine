@@ -10,14 +10,13 @@ import com.web.searchengine.references.In;
 import com.web.searchengine.references.PriorityQueue;
 import com.web.searchengine.references.SortedPriorityQueue;
 import com.web.searchengine.references.TST;
-import com.web.searchengine.vo.Doc;
+import com.web.searchengine.vo.DocumentVo;
 
 
 public class SearchController {
 	private static void searchKeys(String filename, TST<Integer> tst) {
 		In in = new In(filename);
 		String lines = in.readAll();
-		
 		StringTokenizer tokens = new StringTokenizer(lines, " ,`*$|~(){}_@><=+[]\\\\?;/&#<-.!:\\\"\\\"''\\n");
 
 		while (tokens.hasMoreTokens()) {
@@ -58,13 +57,32 @@ public class SearchController {
         return pq;
     }
 	
-	public Doc[] queue2List(PriorityQueue<Integer, String> pq) throws IOException{
-        Doc[] queryResults = new Doc[pq.size()];
+	private static String readFile(String filename) {
+		In in = new In(filename);
+		String lines = "";
+		int count = 2;
+		while (!in.isEmpty() && count!=0) {
+			String s = in.readLine();
+			lines +=s;
+			count--;
+		}
+		
+		return lines;
+	}
+	
+	public DocumentVo[] queue2List(PriorityQueue<Integer, String> pq) throws IOException{
+		DocumentVo[] queryResults = new DocumentVo[pq.size()];
         Iterator<Entry<Integer, String>> s = pq.iterator();
         int flag = 0;
         while(s.hasNext()) {
             Entry<Integer, String> tmp = s.next();
-            Doc doc = new Doc(tmp.getKey(), tmp.getValue());
+            String filename = tmp.getValue().split(".html")[0].trim()+"l.txt";
+            String txtPath = "src/main/resources/static/data/text/";
+            System.out.println(filename);
+            String content = readFile(txtPath+filename);
+            String subString = content.substring(0, 200) + "...";
+            System.out.println(tmp.getValue());
+            DocumentVo doc = new DocumentVo(tmp.getKey(), tmp.getValue(), subString, content);
             queryResults[(pq.size() - 1) - flag] = doc;
             flag++;
         }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.web.searchengine.controller.SearchController;
 import com.web.searchengine.controller.SpellCheckingController;
 import com.web.searchengine.references.PriorityQueue;
-import com.web.searchengine.vo.Doc;
+import com.web.searchengine.vo.DocumentVo;
 
 @Controller
 public class SearchService {
@@ -19,17 +19,18 @@ public class SearchService {
         long startTime = System.currentTimeMillis();
         SearchController searcher = new SearchController();
         PriorityQueue<Integer,String> pq =  SearchController.occurrences(query);
-        Doc[] Docs = searcher.queue2List(pq);
+        DocumentVo[] Docs = searcher.queue2List(pq);
         long endTime = System.currentTimeMillis();
         long timeUsage = endTime - startTime;
         System.out.println("Doc Length"+Docs.length);
         if (Docs.length != 0){
             model.addAttribute("hasResult", true);
+            model.addAttribute("query", query);
             model.addAttribute("resultList", Docs);
             model.addAttribute("numResult", Docs.length);
             model.addAttribute("timeUsage_res", timeUsage);
         } else {
-            model.addAttribute("hasRes", false);
+            model.addAttribute("hasResult", false);
             String[] altWords = SpellCheckingController.getAltWords(query);
             if (altWords.length != 0) {
                 model.addAttribute("alternatives", altWords);

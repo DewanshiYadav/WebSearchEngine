@@ -12,40 +12,69 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
     <title>Search Results</title>
+    <style>
+    	.bg-image {
+    		background-image: url('images/background.png');
+    		background-size: cover;
+		    position: absolute;
+		    top: 0px;
+		    right: 0px;
+		    bottom: 0px;
+		    left: 0px;
+		    opacity: 0.2;
+    	}
+    	.buttons {
+    	    background-color: teal !important;
+   	 		width: 150px;
+    	}
+    </style>
 </head>
 <body>
+<div class="bg-image"></div>
 <!-- Navigation bar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
     <div class="container">
-        <a class="navbar-brand">Search Engine</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <a class="navbar-brand">COMP8547 - Advanced Computing Concepts - Search Engine Result</a>
+    </div>
+    <div style="text-align: left;">
+        <a class="navbar-brand" style="font-size: 16px;">Section-2 (Group 9)</a>
     </div>
 </nav>
 <br><br><br><br>
 
-<div class="container">
+<div class="container" style="position: relative;">
     <div th:if="${hasResult==true}">
         <div class="col-8 offset-2">
-            <p class="fst-italic fw-light" th:text="'Find ' + ${numResult} + ' results. Time usage: ' + ${timeUsage_res} + ' ms.'"></p><br>
+            <p class="fst-italic fw-light" th:text="${numResult} + ' Results (in ' + ${timeUsage_res} + ' ms)'"></p><br>
         </div>
-        <div class="col-8 offset-2" th:each="doc:${resultList}">
+        <div class="col-8 offset-2">
             <div class="card">
                 <div class="card-body">
-                    <span th:text="'[Rank: ' + ${doc.getRank()} + ']  ' + ${doc.getName()}"></span>
+                	<p class="fst-italic fw-light" th:text="'Search Query: ' + ${query}"></p>
+                </div>
+            </div>
+            <br>
+        </div>
+        <div class="col-8 offset-2" th:each="doc, iter:${resultList}">
+            <div class="card">
+                <div class="card-body">
+                	<p class="fst-italic fw-light" th:text="'Match Found: ' + ${doc.getRank()}"></p>
+                	<p th:text="'Filename: ' + ${doc.getName()}"></p>
+                	<!-- <div th:text="${doc.getSubString()}"></div> -->
+                    <button class="btn btn-primary buttons" th:id="${#ids.seq('iter')}" onclick="myFunction(this.id)">
+                        Show Content
+                    </button>
+                    <br><br>
+                    <div th:id="'content_' + ${#ids.seq('doc')}" th:text="${doc.getContent()}" style="display:none"></div>
                 </div>
             </div>
             <br>
         </div>
     </div>
     <div th:if="${hasResult}==false">
-        <div class="col-8 offset-2">
-            <p class="text-lg-center">No results found :( Try something else</p><br>
-        </div>
         <div class="card col-8 offset-2">
             <div class="card-body">
-                <h6 th:text="'Alternative words for \'' + ${getquery} + '\' :'"></h6>
+            	<p class="fst-italic fw-light" th:text="'No results found. Did you mean something from this instead of \'' + ${getquery} + '\' :'"></p>
                 <div th:each="w:${alternatives}">
                     <li th:text="${w}"></li>
                 </div>
@@ -53,7 +82,18 @@
         </div>
     </div>
 </div>
-
-
 </body>
+<script>
+	function myFunction(elementId) {
+		console.log("content_doc"+elementId.split("",5)[4]);
+		var id = "content_doc"+elementId.split("",5)[4];
+	  var x = document.getElementById(id);
+	  console.log(x);
+	  if (x.style.display == "none") {
+	    x.style.display = "block";
+	  } else {
+	    x.style.display = "none";
+	  }
+	}
+</script>
 </html>
