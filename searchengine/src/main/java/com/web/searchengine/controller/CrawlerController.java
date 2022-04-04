@@ -14,37 +14,42 @@ public class CrawlerController {
 
 	private static ArrayList<String> linkList = new ArrayList<>();
 
-    public CrawlerController(String url) {   // constructor
-        getLinks(url);
-    }
-    
-    private static Matcher matchPattern(String regex, String strText) {
+	public CrawlerController(String url) {   // constructor
+		getLinks(url);
+	}
+
+	private static Matcher matchPattern(String regex, String strText) {
 		Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(strText);
 		return matcher;
 	}
 
-    private static void getLinks(String url) {
-    	linkList = new ArrayList<>();
-        Document doc;
-        try {
-            doc = Jsoup.connect(url).get();
-            Elements links = doc.select("a[href]");
-            for (Element link : links) {
-                String s = link.attr("abs:href");
-                String regex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
-                Matcher matcher = matchPattern(regex, s);
-                while (matcher.find()) {
-                    linkList.add(matcher.group(0));
-                }
-            }
-        } catch (IOException e) {
-        	System.out.println("Exception in getLinks method " + e);
-        }
-    }
+	private static void getLinks(String url) {
+		linkList = new ArrayList<>();
+		linkList.add(url);
+		Document doc;
+		try {
+			doc = Jsoup.connect(url).get();
+			Elements links = doc.select("a[href]");
+			for (Element link : links) {
+				String s = link.attr("abs:href");
+				String regex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+				Matcher matcher = matchPattern(regex, s);
+				while (matcher.find())
+				{
+					if(!linkList.contains(matcher.group(0) ) )
+					{
+						linkList.add(matcher.group(0));
+					}
+				}
+			}
+		} catch (IOException e) {
+			System.out.println("Exception in getLinks method " + e);
+		}
+	}
 
-    public String[] getURLList () {
-        String[] urlList = linkList.toArray(new String[linkList.size()]);
-        return urlList;
-    }
+	public String[] getURLList () {
+		String[] urlList = linkList.toArray(new String[linkList.size()]);
+		return urlList;
+	}
 }
