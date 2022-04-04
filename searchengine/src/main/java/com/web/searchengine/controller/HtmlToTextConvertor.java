@@ -12,26 +12,11 @@ import org.jsoup.nodes.Document;
 
 public class HtmlToTextConvertor extends Thread {
 	
-	private static List<String> _urlList = new ArrayList<>() ;
+	private List<String>  _urlList = new ArrayList<>() ; 
 
-	public static HtmlToTextConvertor _instance = null ;
-
-	private HtmlToTextConvertor()
-	{}
-
-	public static HtmlToTextConvertor getInstance()
-	{
-		if( _instance == null)
-		{
-			_instance = new HtmlToTextConvertor() ;
-		}
-		return _instance ;
-	}
-	
-	public  void convertHtmlToText(String[] urlList)
-	{		
-//		_urlList.clear();
-		_urlList = Arrays.asList(urlList);
+	public void convertHtmlToText(String[] urlList)
+	{	
+		_urlList = Arrays.asList(urlList ) ;
 		
 		/// start a separate thread here to save the files.
 		start() ;
@@ -77,7 +62,7 @@ public class HtmlToTextConvertor extends Thread {
 			} 
 			catch (IOException e)
 			{
-				System.out.println("Exception occur in run method :" + e.getMessage() ) ;
+				//System.out.println("Exception occur while converting HTML to text Data :" + e.getMessage() ) ;
 			}
 		}
 		System.out.println("============== HTML AND TEXT FILES ARE SAVED SUCCESSFULLY ========") ;
@@ -94,7 +79,7 @@ public class HtmlToTextConvertor extends Thread {
 		} 
 		catch (IOException e)
 		{
-			System.out.println("Exception occur in saveDataToFile method :" + e.getMessage() ) ;
+			//System.out.println("Exception occur while writing file :" + e.getMessage() ) ;
 		}
 	}
 

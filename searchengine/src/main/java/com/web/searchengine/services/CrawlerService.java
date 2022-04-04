@@ -12,19 +12,31 @@ import com.web.searchengine.controller.HtmlToTextConvertor;
 public class CrawlerService {
 	@RequestMapping("/crawler")
     public String getURL(@RequestParam("urlstr") String url, Model model){
-        Long startTime = System.currentTimeMillis();
+		
+		/// beginTime of the web crawler.
+        Long beginTime = System.currentTimeMillis();
+        
+        /// create crawler object.
         CrawlerController crawler = new CrawlerController(url);
-        Long endTime = System.currentTimeMillis();
-        String[] urlList = crawler.getURLList();
-        Long time = endTime - startTime;
+        
+        /// endingTime of the web crawler.
+        Long endingTime = System.currentTimeMillis();
+        
+        /// get list of URLs.
+        String[] urlsList = crawler.getURLList();
+        
+        /// calculate time difference
+        Long totalTime = endingTime - beginTime;
         
         /// convert and save HTML to text files.
         /// multi-threading concept is used to save the files.
-//        HtmlToTextConvertor.getInstance().convertHtmlToText(urlList) ;
+        HtmlToTextConvertor htmlToText = new HtmlToTextConvertor() ;
+        htmlToText.convertHtmlToText(urlsList) ;
         
-        model.addAttribute("urlList", urlList);
-        model.addAttribute("numURLs", urlList.length);
-        model.addAttribute("timeUsage_url", time);
+        /// add details to model.
+        model.addAttribute( "urlList", urlsList );
+        model.addAttribute( "numURLs", urlsList.length );
+        model.addAttribute( "timeUsage_url", totalTime );
         return "crawlerResultPage";
     }
 }

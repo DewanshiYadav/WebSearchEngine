@@ -12,34 +12,45 @@ import java.util.regex.Pattern;
 
 public class CrawlerController {
 
-	private static ArrayList<String> linkList = new ArrayList<>();
+	/**
+	 * @brief : list of urls for given Website.
+	 */
+	private static ArrayList<String> urlList = new ArrayList<>();
 
-	public CrawlerController(String url) {   // constructor
-		getLinks(url);
+	/**
+	 * Constructor of CrawlerController
+	 * @param urlName
+	 */
+	public CrawlerController(String urlName)
+	{ 
+		getLinks(urlName);
 	}
 
-	private static Matcher matchPattern(String regex, String strText) {
-		Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(strText);
-		return matcher;
-	}
-
-	private static void getLinks(String url) {
-		linkList = new ArrayList<>();
-		linkList.add(url);
-		Document doc;
-		try {
-			doc = Jsoup.connect(url).get();
-			Elements links = doc.select("a[href]");
-			for (Element link : links) {
-				String s = link.attr("abs:href");
-				String regex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
-				Matcher matcher = matchPattern(regex, s);
+	/**
+	 * getLinks : Method to get all links for given Uniform Resource Locator.
+	 * @param url
+	 */
+	private static void getLinks(String url)
+	{
+		urlList.add(url);
+		Document document;
+		try
+		{
+			/// create Jsoup document.
+			document = Jsoup.connect(url).get();
+			Elements allLinks = document.select("a[href]");
+			
+			/// iterate and add details to list.
+			for (Element linkRef : allLinks) 
+			{
+				String s = linkRef.attr("abs:href");
+				String regExp = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+				Matcher matcher = matchPattern(regExp, s);
 				while (matcher.find())
 				{
-					if(!linkList.contains(matcher.group(0) ) )
+					if(!urlList.contains(matcher.group(0) ) )
 					{
-						linkList.add(matcher.group(0));
+						urlList.add(matcher.group(0));
 					}
 				}
 			}
@@ -48,8 +59,25 @@ public class CrawlerController {
 		}
 	}
 
-	public String[] getURLList () {
-		String[] urlList = linkList.toArray(new String[linkList.size()]);
-		return urlList;
+	/**
+	 * get list of urls.
+	 * @return
+	 */
+	public String[] getURLList () 
+	{
+		String[] result = urlList.toArray(new String[urlList.size()]);
+		return result;
+	}
+
+	/**
+	 * check regular expression match in text string.
+	 * @param regExpression
+	 * @param textStr
+	 * @return
+	 */
+	private static Matcher matchPattern(String regExpression, String textStr) {
+		Pattern pattern = Pattern.compile(regExpression, Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(textStr);
+		return matcher;
 	}
 }
