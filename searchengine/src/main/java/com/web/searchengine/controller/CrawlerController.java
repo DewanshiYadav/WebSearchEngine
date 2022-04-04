@@ -11,12 +11,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CrawlerController {
-
 	/**
 	 * @brief : list of urls for given Website.
 	 */
 	private static ArrayList<String> urlList = new ArrayList<>();
-
+	private static String regExp = Constants.urlRegex;
 	/**
 	 * Constructor of CrawlerController
 	 * @param urlName
@@ -32,6 +31,7 @@ public class CrawlerController {
 	 */
 	private static void getLinks(String url)
 	{
+		urlList = new ArrayList<>();
 		urlList.add(url);
 		Document document;
 		try
@@ -44,7 +44,6 @@ public class CrawlerController {
 			for (Element linkRef : allLinks) 
 			{
 				String s = linkRef.attr("abs:href");
-				String regExp = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
 				Matcher matcher = matchPattern(regExp, s);
 				while (matcher.find())
 				{

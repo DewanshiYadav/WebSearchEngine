@@ -9,14 +9,15 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class MainSerivce {
 
-    // Set default homepage
-    @RequestMapping("/")
-    public String home() { return "home"; }
+	// Set default homepage
+	@RequestMapping("/")
+	public String home() {
+		return "home";
+	}
 
-    @RequestMapping(value = "/returnHome", method = RequestMethod.GET)
-    public String returnHome(HttpServletRequest request) {
-        return request.getParameter("url");
-    }
+	@RequestMapping(value = "/returnHome", method = RequestMethod.GET)
+	public String returnHome(HttpServletRequest request) {
+		return request.getParameter("url");
+	}
 
 }
-

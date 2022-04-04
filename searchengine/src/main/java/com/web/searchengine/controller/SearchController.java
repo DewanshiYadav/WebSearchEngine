@@ -14,10 +14,14 @@ import com.web.searchengine.vo.DocumentVo;
 
 
 public class SearchController {
+	private static String txtPath = Constants.txtPath;
+	private static String htmlPath = Constants.htmlPath;
+	private static String strToken = Constants.strToken;
+	
 	private static void searchKeys(String filename, TST<Integer> tst) {
 		In in = new In(filename);
 		String lines = in.readAll();
-		StringTokenizer tokens = new StringTokenizer(lines, " ,`*$|~(){}_@><=+[]\\\\?;/&#<-.!:\\\"\\\"''\\n");
+		StringTokenizer tokens = new StringTokenizer(lines, strToken);
 
 		while (tokens.hasMoreTokens()) {
 			String key = tokens.nextToken();
@@ -32,9 +36,6 @@ public class SearchController {
 	}
 	
 	public static PriorityQueue<Integer,String> occurrences(String scan) throws IOException {
-        String txtPath = "src/main/resources/static/data/text/";
-        String htmlPath = "src/main/resources/static/data/html/";
-
         File txt = new File(txtPath);
         File[] Files = txt.listFiles();
         File html = new File(htmlPath);
@@ -73,18 +74,15 @@ public class SearchController {
 	public DocumentVo[] queue2List(PriorityQueue<Integer, String> pq) throws IOException{
 		DocumentVo[] queryResults = new DocumentVo[pq.size()];
         Iterator<Entry<Integer, String>> s = pq.iterator();
-        int flag = 0;
+        int count = 0;
         while(s.hasNext()) {
             Entry<Integer, String> tmp = s.next();
             String filename = tmp.getValue().split(".html")[0].trim()+"l.txt";
-            String txtPath = "src/main/resources/static/data/text/";
-            System.out.println(filename);
             String content = readFile(txtPath+filename);
             String subString = content.substring(0, 200) + "...";
-            System.out.println(tmp.getValue());
             DocumentVo doc = new DocumentVo(tmp.getKey(), tmp.getValue(), subString, content);
-            queryResults[(pq.size() - 1) - flag] = doc;
-            flag++;
+            queryResults[(pq.size() - 1) - count] = doc;
+            count++;
         }
         return queryResults;
     }

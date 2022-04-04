@@ -11,6 +11,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 public class HtmlToTextConvertor extends Thread {
+	private static String htmlFolder = Constants.htmlFilePath;
+	private static String textFolder = Constants.txtFilePath;
 	
 	private List<String>  _urlList = new ArrayList<>() ; 
 
@@ -23,10 +25,7 @@ public class HtmlToTextConvertor extends Thread {
 	}
 	
 	public void run()
-	{
-		String htmlFolder = "htmlFiles/" ;
-		String textFolder = "textFiles/" ;
-		
+	{		
 		File directory = new File( htmlFolder) ;
 		
 		///create directory if not existed.

@@ -17,14 +17,19 @@ public class SearchService {
 	@RequestMapping("/searcher")
 	public String getQuery(@RequestParam("querystr") String query, Model model) throws IOException {
 		long startTime = System.currentTimeMillis();
-		SearchController searcher = new SearchController();
-		PriorityQueue<Integer, String> pq = SearchController.occurrences(query);
-		DocumentVo[] Docs = searcher.queue2List(pq);
-		long endTime = System.currentTimeMillis();
-		long totalTime = endTime - startTime;
-		System.out.println("Doc Length" + Docs.length);
+		try {
+			SearchController searcher = new SearchController();
+			PriorityQueue<Integer, String> pq = SearchController.occurrences(query);
+			DocumentVo[] Docs = searcher.queue2List(pq);
+			long endTime = System.currentTimeMillis();
+			long totalTime = endTime - startTime;
 
-		setAllResults(Docs, model, query, totalTime);
+			setAllResults(Docs, model, query, totalTime);
+		} catch (Exception e) {
+			model.addAttribute("hasResult", false);
+			String[] noAlt = { "None" };
+			model.addAttribute("alternatives", noAlt);
+		}
 
 		return "searchResultPage";
 	}
