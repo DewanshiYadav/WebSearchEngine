@@ -15,9 +15,10 @@ import com.web.searchengine.references.In;
 
 public class SpellCheckingController {
 	private static ArrayList<String> vocab = new ArrayList<>();
+	private static String txtPath = Constants.txtPath;
 	
 	private static void getVocab() throws IOException {
-		File files = new File("src/main/resources/static/data/text");
+		File files = new File(txtPath);
 		File[] texts = files.listFiles();
 		
 		for(File textFile: texts) {
@@ -77,11 +78,9 @@ public class SpellCheckingController {
 		// get top 10 alternative words
 		int rank = 0;
 		for (Map.Entry<String, Integer> en : map1.entrySet()) {
-			if (en.getValue() != 0) {
 				altWords[rank] = en.getKey();
 				rank++;
 				if (rank == 10){ break; }
-			}
 		}
 		return altWords;
 	}
